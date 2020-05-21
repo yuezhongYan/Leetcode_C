@@ -1,0 +1,28 @@
+
+
+int maxArea(int* height, int heightSize){
+    int left = 0;
+    int right = heightSize - 1;
+    int maxArea = 0;
+    int minVerticalLine;
+    
+    while(left < right){
+        if(height[left] < height[right]){
+            minVerticalLine = height[left];
+        }else{
+            minVerticalLine = height[right];
+        }
+        
+        if(maxArea < (right - left) * minVerticalLine){
+            maxArea = (right - left) * minVerticalLine;
+        }
+        
+        if(height[left] < height[right]){
+            left++;
+        }else{
+            right--;
+        }
+    }
+    
+    return maxArea;
+}
