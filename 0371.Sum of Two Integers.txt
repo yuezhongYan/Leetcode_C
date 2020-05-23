@@ -1,0 +1,18 @@
+
+
+int getSum(int a, int b){
+    int additionWithoutCarry;
+    int carry;
+    
+    while(b != 0){
+        additionWithoutCarry = a ^ b;
+
+        //Avoid the condition that a & b is too large.
+        carry = ((a & b) & 0xFFFFFFFF) << 1;
+        
+        a = additionWithoutCarry;
+        b = carry;
+    }
+    
+    return a;
+}
