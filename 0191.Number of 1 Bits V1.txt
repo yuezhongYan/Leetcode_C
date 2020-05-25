@@ -1,6 +1,9 @@
 //Naive implementation of Hamming Weight.
 //It is naive because it takes 5 * 4 = 20 arithmetic operations.
 //Refer: https://en.wikipedia.org/wiki/Hamming_weight
+//
+//It relates to Problem 338, which counts the number of 1's for i in
+//[0, num].
 int hammingWeight(uint32_t n) {
     int M1 = 0x55555555; //binary: 01010101010101010101010101010101
     int M2 = 0x33333333; //binary: 00110011001100110011001100110011
