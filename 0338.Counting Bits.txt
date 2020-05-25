@@ -1,0 +1,44 @@
+
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+/**
+ * Count the number of 1's in [0, num] in binary and return them as array.
+ * Time complexity is O(n), where while loop takes O(n) and
+ * countNumberOfOnes() takes O(1).
+ */
+int* countBits(int num, int* returnSize){
+    int numberOfOnes;
+    int* result = (int*) malloc(sizeof(int) * (num + 1));
+    *returnSize = num + 1;
+    
+    int i = 0;
+    while(i <= num){
+        numberOfOnes = countNumberOfOnes(i);
+        result[i] = numberOfOnes;
+        i++;
+    }
+    
+    return result;
+}
+
+/**
+ * It is the same as Problem 191 with Hamming Weight to count the number of 1's.
+ * Refer: https://en.wikipedia.org/wiki/Hamming_weight
+ */
+int countNumberOfOnes(int number){
+    int M1 = 0x55555555; // binary: 01010101010101010101010101010101
+    int M2 = 0x33333333; // binary: 00110011001100110011001100110011
+    int M4 = 0x0F0F0F0F; // binary: 00001111000011110000111100001111
+    int M8 = 0x00FF00FF; // binary: 00000000111111110000000011111111
+    int M16 = 0x0000FFFF; // binary: 00000000000000001111111111111111
+        
+    number = (number & M1) + ((number >> 1) & M1);
+    number = (number & M2) + ((number >> 2) & M2);
+    number = (number & M4) + ((number >> 4) & M4);
+    number = (number & M8) + ((number >> 8) & M8);
+    number = (number & M16) + ((number >> 16) & M16);
+        
+    return number;
+}
