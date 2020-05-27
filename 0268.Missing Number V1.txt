@@ -1,0 +1,59 @@
+/**
+ * Implement compare function
+ *
+ * The types of the two parameters must be const void *. a and b are two pointers pointing 
+ * to array elements. If a is less than b, return a negative integer. If a is greater than 
+ * b, return a positive integer. If a is equal to b, return 0.
+ */
+int compare(const void *a, const void *b){
+    return *(int*)a - *(int*)b;
+}
+
+/**
+ * Given an array containing n distinct numbers taken from 0, 1, 2, ..., n, find
+ * the one that is missing from the array.
+ * 
+ * First, we sort nums. Then, we ensure that 0 is at the beginning and that n is
+ * at the end. The missing number must somewhere between (but not including) 0
+ * and n. To find it, we ensure that the number we expect to be at each index is
+ * indeed there. As soon as we find an unexpected number, we can simply return
+ * the expected number. The worst-case time complexity is O(n^2), where qsort() takes
+ * O(n^2) and for loop takes O(n) with both operations in the worst case.
+ */
+int missingNumber(int* nums, int numsSize){
+    /*
+     * The form of qsort() looks like:
+     * void qsort( void *ptr, size_t count, size_t size,
+     *       int (*comp)(const void *, const void *) );
+     *
+     * ptr: pointer to array to sort
+     * count: number of elements in the array
+     * size: size of each elements in the array in bytes
+     * comp: comparison function, where it returns a negative integer if the first value is
+     *       less than the second, returns a positive integer if the first value is greater
+     *       than the second, or returns 0 if these two arguments are equivalent.
+     *
+     * Sorts the given array pointed to by ptr(in this case, nums) with 
+     * quick sort in ascending order. 
+     * The array contains count(in this case, numsSize) elements of 
+     * size(in this case, sizeof(int)) bytes. Function pointed to by 
+     * comp(in this case, compare()) is used for object comparison.
+     */
+    qsort(nums, numsSize, sizeof(int), compare);
+    
+    bool isBreak = false;
+    int missingNumber = -1;
+    for(int i = 0; i < numsSize; i++){
+        if(nums[i] != i){
+            missingNumber = i;
+            isBreak = true;
+            break;
+        }
+    }
+    
+    if(!isBreak){
+        missingNumber = numsSize;
+    }
+    
+    return missingNumber;
+}
