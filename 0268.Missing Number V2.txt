@@ -8,6 +8,8 @@
  * e.g., nums = {3, 0, 1}. Then hash array = {1, 1, 0, 1} since 3 => last index, 0 => 0th 
  * index, and 1 => 1st index.
  * Finally, traverse the hash array and find 0's position, which is the missing number.
+ * Time complexity is O(n) in the worst case because insertion takes O(n), update phase
+ * takes O(n), and traversal takes O(n). Thus total of O(3n) => O(n).
  */
 int missingNumber(int* nums, int numsSize){
     const int INITIALIZED_HASH_CODE = 0;
