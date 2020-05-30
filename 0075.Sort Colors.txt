@@ -1,0 +1,65 @@
+
+void quickSort(int* nums, int start, int end);
+
+/**
+ * Sort colors represented with integers by quick sorting algorithm.
+ * Time complexity of quick sort is O(n log n) in average and O(n^2) is the worst
+ * case.
+ */
+void sortColors(int* nums, int numsSize){
+    quickSort(nums, 0, numsSize - 1);
+}
+
+/**
+ * Implement quick sort.
+ */
+void quickSort(int* nums, int start, int end){
+    if(start >= end){
+        return;
+    }
+    
+    int pivotIndex = (rand() % (end - start + 1)) + start;
+    int pivot = nums[pivotIndex];
+    
+    /*
+     * Swap pivot with nums[start]. Now the pivot is on the left.
+     */
+    int temp = nums[pivotIndex];
+    nums[pivotIndex] = nums[start];
+    nums[start] = temp;
+    
+    int left = start + 1;
+    int right = end;
+    
+    while(left <= right){
+        while(left <= right && nums[left] <= pivot){
+            left++;
+        }
+        
+        while(left <= right && nums[right] > pivot){
+            right--;
+        }
+        
+        if(left < right){
+            /*
+             * Swap nums[left] and nums[right]
+             */
+            int temp2 = nums[left];
+            nums[left] = nums[right];
+            nums[right] = temp2;
+            
+            left++;
+            right--;
+        }
+    }
+    
+    /*
+     * Swap nums[start] and nums[right]. Now pivot is nums[right].
+     */
+    int temp3 = nums[start];
+    nums[start] = nums[right];
+    nums[right] = temp3;
+    
+    quickSort(nums, start, right - 1);
+    quickSort(nums, right + 1, end);
+}
