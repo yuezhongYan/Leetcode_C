@@ -1,0 +1,153 @@
+void mergeSort(int* nums, int left, int right, int numsSize);
+void merge(int* leftSubarray, int leftSubarraySize, int* rightSubarray, 
+           int rightSubarraySize, int* result);
+bool compare(int numberFromLeft, int numberFromRight);
+
+/*
+ * Given a list of non negative integers, arrange them such that they form the largest 
+ * number with merge sort.
+ * 
+ * e.g., Input: [3,30,34,5,9]
+ *       Output: "9534330"
+ * 
+ * Time complexity is O(n log n) because merge sort takes O(n log n) in the worst case.
+ */
+char * largestNumber(int* nums, int numsSize){
+    /*
+     * Handle the case where all numbers are 0's. Here, the output is 0.
+     */
+    bool isAllZeros = true;
+    for(int i = 0; i < numsSize; i++){
+        if(nums[i] != 0){
+            isAllZeros = false;
+            break;
+        }
+    }
+    
+    if(isAllZeros){
+        return "0";
+    }
+    
+    mergeSort(nums, 0, numsSize - 1, numsSize);
+    
+    char *str = malloc(100 * sizeof(int));
+    int builder = 0;
+    for(int i = 0; i < numsSize; i++){
+        builder += sprintf(&str[builder], "%d", nums[i]);
+    }
+    
+    return str;
+}
+
+/*
+ * Implement merge sort.
+ */
+void mergeSort(int* nums, int left, int right, int numsSize){
+    if(numsSize < 2){
+        return;
+    }
+    
+    /*
+     * Create left sub-array.
+     */
+    int leftSubarraySize = numsSize >> 1;
+    int* leftSubarray = malloc(leftSubarraySize * sizeof(int));
+    for(int i = 0; i < leftSubarraySize; i++){
+        leftSubarray[i] = nums[i];
+    }
+    
+    /*
+     * Create right sub-array.
+     */
+    int rightSubarraySize = numsSize - leftSubarraySize;
+    int* rightSubarray = malloc(rightSubarraySize * sizeof(int));
+    for(int i = 0; i < rightSubarraySize; i++){
+        rightSubarray[i] = nums[i + leftSubarraySize];
+    }
+    
+    int middle = left + (right - left) >> 1;
+    mergeSort(leftSubarray, left, middle, leftSubarraySize);
+    mergeSort(rightSubarray, middle + 1, right, rightSubarraySize);
+    merge(leftSubarray, leftSubarraySize, rightSubarray, rightSubarraySize, nums);
+}
+
+/*
+ * Implement modified merge.
+ */
+void merge(int* leftSubarray, int leftSubarraySize, int* rightSubarray, 
+           int rightSubarraySize, int* result){
+    /*
+     * Index for left sub-array.
+     */
+    int i = 0;
+    
+    /*
+     * Index for right sub-array.
+     */
+    int j = 0;
+    
+    /*
+     * Index for result array.
+     */
+    int k = 0;
+    
+    while(i < leftSubarraySize && j < rightSubarraySize){
+        /*
+         * Implement modified merging process with compare method that obtains the 
+         * larger combination. 
+         * e.g., Input: [3, 30], then there are two combinations, 330 and 303. To obtain 
+         * 330, 3 comes into result array first then 30.
+         */
+        if(compare(leftSubarray[i], rightSubarray[j])){
+            /*
+             * Move the elements of left sub-array at the end of result
+             */
+            result[k] = leftSubarray[i];
+            i++;
+        }else{
+            /*
+             * Move the elements of right sub-array at the end of result
+             */
+            result[k] = rightSubarray[j];
+            j++;
+        }
+        k++;
+    }
+    
+    /*
+     * Move the remaining elements of left sub-array to result
+     */
+    while(i < leftSubarraySize){
+        result[k] = leftSubarray[i];
+        i++;
+        k++;
+    }
+    
+    /*
+     * Move the remaining elements of right sub-array to result
+     */
+    while(j < rightSubarraySize){
+        result[k] = rightSubarray[j];
+        j++;
+        k++;
+    }
+}
+
+/*
+ * Compare combinations of the number from left sub-array with the one from right. If 
+ * the combination of the number from left sub-array and the one from right is greater 
+ * than the combination of the number from right sub-array and the one from left, return 
+ * true. Otherwise, return false.
+ */
+bool compare(int numberFromLeft, int numberFromRight){
+    char *leftStr = (char *) malloc(20 * sizeof(int));
+    sprintf(leftStr, "%d", numberFromLeft);
+    
+    char *rightStr = (char *) malloc(20 * sizeof(int));
+    sprintf(rightStr, "%d", numberFromRight);
+    
+    strcat(leftStr, rightStr);
+    strcat(rightStr, leftStr);
+    
+    return strcmp(leftStr, rightStr) > 0;
+}
