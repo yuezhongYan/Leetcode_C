@@ -1,0 +1,196 @@
+/**
+ * Obtain both array and size of array in a structure as one function can just return one 
+ * value.
+ */
+struct arrayArraySize{
+    int* array;
+    int arraySize;
+};
+
+typedef struct arrayArraySize Struct;
+
+Struct bucketSortAndRemoveDuplicates(int* nums, int numsSize);
+int max(int i, int j);
+
+/**
+ * Given two arrays, write a function to compute their intersection.
+ *
+ * The algorithm has 2 steps:
+ * 1. Sort and remove duplicates from 2 given arrays using buckets, which stores the number
+ * of occurrences for each element from these given arrays and whose index corresponds to
+ * each element of the array.
+ * 2. Find intersection of two unique sorted arrays. If an element from the first array is 
+ * equal to another one from the second array, then store this element to the returned array 
+ * and increment the pointer to the first array. Else if an element from the first array is 
+ * less than another one from the second array, then just increment the pointer to the first 
+ * array. Else increment the pointer to the second array.
+ *
+ * E.g., nums1 = [1, 2, 2, 1], nums2 = [2, 2].
+ * 1. bucket1 = [0, 2, 2] for nums1 and
+ *               0  1  2
+ *    bucket2 = [2] for nums2.
+ *               0
+ *    Retrive [1, 2] for nums1 and [2] for nums2.
+ * 2. [1, 2] intersection [2] = [2].
+ *
+ * Time complexity for this function is O(n).
+ *
+ * nums1: First given array
+ * nums1Size: size of nums1
+ * nums2: Second given array
+ * nums2Size: size of nums2
+ * returnSize: size of returned array
+ *
+ * returns: Intersection of nums1 and nums2.
+ *
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* intersection(int* nums1, int nums1Size, int* nums2, int nums2Size, int* returnSize){
+    /*
+     * Return size.
+     */
+    int count = 0;
+    
+    int* returnedArray = (int*) malloc(count * sizeof(int));
+    
+    if(nums1Size == 0 || nums2Size == 0){
+        *returnSize = count;
+        return returnedArray;
+    }
+    
+    Struct uniqueSortedNums1 = bucketSortAndRemoveDuplicates(nums1, nums1Size);
+    Struct uniqueSortedNums2 = bucketSortAndRemoveDuplicates(nums2, nums2Size);
+    
+    /*
+     * Index for unique sorted nums1.
+     */
+    int i = 0;
+    
+    /*
+     * Index for unique sorted nums2.
+     */
+    int j = 0;
+    
+    /*
+     * Find return size.
+     */
+    while(i < uniqueSortedNums1.arraySize && j < uniqueSortedNums2.arraySize){
+        if(uniqueSortedNums1.array[i] < uniqueSortedNums2.array[j]){
+            i++;
+        }else if(uniqueSortedNums1.array[i] > uniqueSortedNums2.array[j]){
+            j++;
+        }else{
+            i++;
+            count++;
+        }
+    }
+    
+    returnedArray = (int*) malloc(count * sizeof(int));
+    
+    /*
+     * Set the index for unique sorted nums1 to be 0.
+     */
+    i = 0;
+    
+    /*
+     * Set the index for unique sorted nums2 to be 0.
+     */
+    j = 0;
+    
+    /*
+     * Index for returned array.
+     */
+    int k = 0;
+    
+    while(i < uniqueSortedNums1.arraySize && j < uniqueSortedNums2.arraySize){
+        if(uniqueSortedNums1.array[i] < uniqueSortedNums2.array[j]){
+            i++;
+        }else if(uniqueSortedNums1.array[i] > uniqueSortedNums2.array[j]){
+            j++;
+        }else{
+            returnedArray[k] = uniqueSortedNums1.array[i];
+            i++;
+            k++;
+        }
+    }
+    
+    *returnSize = count;
+    return returnedArray;
+}
+
+/**
+ * Implement bucket sort and remove duplicates.
+ *
+ * nums: given array
+ * numsSize: size of nums
+ *
+ * returns: a structure that contains both array and size of array.
+ */
+Struct bucketSortAndRemoveDuplicates(int* nums, int numsSize){
+    /*
+     * Find maximum number in the given array.
+     */
+    int maxNumber = nums[0];
+    for(int i = 1; i < numsSize; i++){
+        maxNumber = max(nums[i], maxNumber);
+    }
+    
+    /*
+     * Declare a buckets array and initialize all values to be 0.
+     */
+    int buckets[maxNumber + 1];
+    for(int i = 0; i < maxNumber + 1; i++){
+        buckets[i] = 0;
+    }
+    
+    /*
+     * Use elements in nums as indices of buckets array and increment corresponding buckets 
+     * elements at specified indices.
+     */
+    for(int i = 0; i < numsSize; i++){
+        buckets[nums[i]]++;
+    }
+    
+    Struct object;
+    
+    /*
+     * Find the size of result array.
+     */
+    int resultSize = 0;
+    for(int i = 0; i < maxNumber + 1; i++){
+        if(buckets[i] > 0){
+            resultSize++;
+        }
+    }
+    
+    object.arraySize = resultSize;
+    
+    int* result = (int*) malloc(resultSize * sizeof(int));
+    int resultIndex = 0;
+    for(int i = 0; i < maxNumber + 1; i++){
+        if(buckets[i] > 0){
+            result[resultIndex] = i;
+            resultIndex++;
+        }
+    }
+    
+    object.array = result;
+    
+    return object;
+}
+
+/**
+ * Implement max.
+ * 
+ * currentElement: current element in a sequence
+ * currentMaxNumber: current maximum number in a sequence
+ *
+ * returns: maximum number in a sequence
+ */
+int max(int currentElement, int currentMaxNumber){
+    if(currentElement < currentMaxNumber){
+        return currentMaxNumber;
+    }else{
+        return currentElement;
+    }
+}
