@@ -28,8 +28,8 @@ int max(int i, int j);
  * E.g., nums1 = [1, 2, 2, 1], nums2 = [2, 2].
  * 1. bucket1 = [0, 2, 2] for nums1 and
  *               0  1  2
- *    bucket2 = [2] for nums2.
- *               0
+ *    bucket2 = [0, 0, 2] for nums2.
+ *               0  1  2
  *    Retrive [1, 2] for nums1 and [2] for nums2.
  * 2. [1, 2] intersection [2] = [2].
  *
